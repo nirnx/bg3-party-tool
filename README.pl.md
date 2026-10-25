@@ -8,6 +8,8 @@ dostała **kreator postaci**, a nie cudzą postać, i przywraca odłożoną post
 Gra sama tego nie umie: postać odesłana do szafy Marnieja nadal jest postacią gracza i dostaje ją następna osoba, która
 dołączy. Narzędzie edytuje więc save. Oryginalny save nigdy nie jest zmieniany; każda operacja tworzy nowy.
 
+![BG3 Party Tool: park a character, then restore it](docs/demo.gif)
+
 ## Pobieranie
 
 Najnowsza wersja jest w [Releases](https://github.com/nirnx/bg3-party-tool/releases): `BG3PartyTool-win-x64.zip`
@@ -115,6 +117,7 @@ wszystko), a przy `ExcludeHidden=false` nie dodaje żadnego pliku, więc narzęd
   Steam API w kopii `bin/`) do testów dołączania na jednym komputerze.
 * `tools/bg3-host-log.sh` uruchamia hosta z logiem silnika; natywna wersja linuksowa pisze logi do
   `~/.local/state/Larian Studios/Baldur's Gate 3/logs/`.
+* `tools/demo` renderuje animację do README, sterując prawdziwym interfejsem bez okna (`Demo <save|archiwum> <postać> <folder klatek>`).
 * `tools/trace-join.sh` podpina gdb do działającego hosta i loguje decyzje dołączania i kreatora (adresy dla
   buildu 4.1.1.7631656).
 

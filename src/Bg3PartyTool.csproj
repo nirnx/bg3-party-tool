@@ -12,6 +12,7 @@
     <LSLibDir>$(MSBuildThisFileDirectory)../vendor/lslib</LSLibDir>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="Demo" />
     <PackageReference Include="Avalonia" Version="11.3.22" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.22" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.22" />

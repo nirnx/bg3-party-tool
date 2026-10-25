@@ -9,6 +9,8 @@ The game itself has no way to do this: a character sent to Withers' Wardrobe is 
 person who joins is assigned it. This tool edits the save instead. The original save is never modified; every
 operation writes a new save.
 
+![BG3 Party Tool: park a character, then restore it](docs/demo.gif)
+
 ## Download
 
 Grab the latest build from [Releases](https://github.com/nirnx/bg3-party-tool/releases): `BG3PartyTool-win-x64.zip`
@@ -116,6 +118,7 @@ everything) and adds nothing with `ExcludeHidden=false`, so the tool builds the 
   Steam API emulator placed in a copy of `bin/`) to test joining on one machine.
 * `tools/bg3-host-log.sh` starts the host with the engine log; the native Linux build writes logs to
   `~/.local/state/Larian Studios/Baldur's Gate 3/logs/`.
+* `tools/demo` renders the README animation by driving the real UI headlessly (`Demo <save|archive> <character> <frames dir>`).
 * `tools/trace-join.sh` attaches gdb to the running host and logs the join and character-creation decisions
   (addresses for build 4.1.1.7631656).
 
