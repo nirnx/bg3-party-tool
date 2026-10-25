@@ -1,0 +1,40 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - name: Publish linux-x64
+        run: dotnet publish src/Bg3PartyTool.csproj -c Release -r linux-x64 --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=none -o dist/linux-x64
+      - name: Publish win-x64
+        run: dotnet publish src/Bg3PartyTool.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=none -o dist/win-x64
+      - name: Package
+        run: |
+          mkdir -p out
+          tar -C dist/linux-x64 -czf out/BG3PartyTool-linux-x64.tar.gz BG3PartyTool
+          (cd dist/win-x64 && zip -q ../../out/BG3PartyTool-win-x64.zip BG3PartyTool.exe)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BG3PartyTool-linux-x64
+          path: out/BG3PartyTool-linux-x64.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BG3PartyTool-win-x64
+          path: out/BG3PartyTool-win-x64.zip
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: out/*
+          generate_release_notes: true

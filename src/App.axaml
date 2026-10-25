@@ -1,0 +1,131 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Bg3PartyTool.App"
+             RequestedThemeVariant="Dark">
+  <Application.Resources>
+    <FontFamily x:Key="Heading">avares://BG3PartyTool/Assets#Cinzel</FontFamily>
+    <SolidColorBrush x:Key="Bg" Color="#0E0C12" />
+    <SolidColorBrush x:Key="Bg2" Color="#16131C" />
+    <SolidColorBrush x:Key="Panel" Color="#1C1824" />
+    <SolidColorBrush x:Key="Panel2" Color="#241F2E" />
+    <SolidColorBrush x:Key="Line" Color="#352E42" />
+    <SolidColorBrush x:Key="Text" Color="#ECE6F2" />
+    <SolidColorBrush x:Key="Muted" Color="#9D93AB" />
+    <SolidColorBrush x:Key="Gold" Color="#D4AF6A" />
+    <SolidColorBrush x:Key="Gold2" Color="#F0D59A" />
+    <SolidColorBrush x:Key="Danger" Color="#E0645C" />
+    <SolidColorBrush x:Key="Ok" Color="#6CC28F" />
+    <LinearGradientBrush x:Key="CardBrush" StartPoint="0%,0%" EndPoint="0%,100%">
+      <GradientStop Color="#241F2E" Offset="0" />
+      <GradientStop Color="#1C1824" Offset="1" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="GoldBrush" StartPoint="0%,0%" EndPoint="0%,100%">
+      <GradientStop Color="#E2BF7C" Offset="0" />
+      <GradientStop Color="#B98F45" Offset="1" />
+    </LinearGradientBrush>
+    <RadialGradientBrush x:Key="WindowGlow" Center="75%,0%" GradientOrigin="75%,0%" RadiusX="70%" RadiusY="60%">
+      <GradientStop Color="#2A1F3A" Offset="0" />
+      <GradientStop Color="#0E0C12" Offset="1" />
+    </RadialGradientBrush>
+  </Application.Resources>
+
+  <Application.Styles>
+    <FluentTheme />
+
+    <Style Selector="TextBlock.h1">
+      <Setter Property="FontFamily" Value="{StaticResource Heading}" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Foreground" Value="{StaticResource Gold2}" />
+    </Style>
+    <Style Selector="TextBlock.muted">
+      <Setter Property="Foreground" Value="{StaticResource Muted}" />
+    </Style>
+
+    <Style Selector="Button.btn">
+      <Setter Property="Background" Value="{StaticResource Panel2}" />
+      <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="10" />
+      <Setter Property="Padding" Value="14,8" />
+      <Setter Property="Foreground" Value="{StaticResource Text}" />
+    </Style>
+    <Style Selector="Button.btn:pointerover /template/ ContentPresenter">
+      <Setter Property="BorderBrush" Value="{StaticResource Gold}" />
+      <Setter Property="Background" Value="#2C2638" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="{StaticResource GoldBrush}" />
+      <Setter Property="Foreground" Value="#1A140B" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource GoldBrush}" />
+      <Setter Property="Foreground" Value="#1A140B" />
+      <Setter Property="Opacity" Value="0.92" />
+    </Style>
+    <Style Selector="Button.danger">
+      <Setter Property="Foreground" Value="{StaticResource Danger}" />
+      <Setter Property="Background" Value="#1FE0645C" />
+      <Setter Property="BorderBrush" Value="#59E0645C" />
+    </Style>
+    <Style Selector="Button.danger:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#33E0645C" />
+      <Setter Property="BorderBrush" Value="{StaticResource Danger}" />
+      <Setter Property="Foreground" Value="{StaticResource Danger}" />
+    </Style>
+
+    <Style Selector="ToggleButton.chip">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="99" />
+      <Setter Property="Padding" Value="10,3" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Foreground" Value="{StaticResource Muted}" />
+    </Style>
+    <Style Selector="ToggleButton.chip:checked /template/ ContentPresenter">
+      <Setter Property="Background" Value="#14D4AF6A" />
+      <Setter Property="BorderBrush" Value="{StaticResource Gold}" />
+      <Setter Property="Foreground" Value="{StaticResource Gold2}" />
+    </Style>
+
+    <Style Selector="ListBox.saves">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="ListBox.saves ListBoxItem">
+      <Setter Property="Padding" Value="8" />
+      <Setter Property="Margin" Value="0,1" />
+      <Setter Property="CornerRadius" Value="12" />
+    </Style>
+    <Style Selector="ListBox.saves ListBoxItem:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource Panel}" />
+    </Style>
+    <Style Selector="ListBox.saves ListBoxItem:selected /template/ ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource Panel2}" />
+    </Style>
+
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{StaticResource CardBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="14" />
+      <Setter Property="BoxShadow" Value="0 10 30 0 #73000000" />
+      <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+    <Style Selector="Border.stat">
+      <Setter Property="Background" Value="#40000000" />
+      <Setter Property="CornerRadius" Value="10" />
+      <Setter Property="Padding" Value="10,6" />
+    </Style>
+    <Style Selector="Border.tag">
+      <Setter Property="CornerRadius" Value="99" />
+      <Setter Property="Padding" Value="9,2" />
+      <Setter Property="Background" Value="#0FFFFFFF" />
+    </Style>
+    <Style Selector="ComboBox">
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="CornerRadius" Value="10" />
+    </Style>
+  </Application.Styles>
+</Application>

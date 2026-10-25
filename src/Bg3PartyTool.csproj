@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>BG3PartyTool</AssemblyName>
+    <RootNamespace>Bg3PartyTool</RootNamespace>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <ApplicationIcon Condition="Exists('Assets/icon.ico')">Assets/icon.ico</ApplicationIcon>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <LSLibDir>$(MSBuildThisFileDirectory)../vendor/lslib</LSLibDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.22" />
+    <PackageReference Include="SharpCompress" Version="0.50.7" />
+    <PackageReference Include="ZstdSharp.Port" Version="0.8.8" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="Assets/**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="LSLib"><HintPath>$(LSLibDir)/LSLib.dll</HintPath></Reference>
+    <Reference Include="K4os.Compression.LZ4"><HintPath>$(LSLibDir)/K4os.Compression.LZ4.dll</HintPath></Reference>
+    <Reference Include="K4os.Compression.LZ4.Streams"><HintPath>$(LSLibDir)/K4os.Compression.LZ4.Streams.dll</HintPath></Reference>
+    <Reference Include="K4os.Hash.xxHash"><HintPath>$(LSLibDir)/K4os.Hash.xxHash.dll</HintPath></Reference>
+    <Reference Include="System.IO.Hashing"><HintPath>$(LSLibDir)/System.IO.Hashing.dll</HintPath></Reference>
+    <Reference Include="OpenTK.Mathematics"><HintPath>$(LSLibDir)/OpenTK.Mathematics.dll</HintPath></Reference>
+    <Reference Include="Newtonsoft.Json"><HintPath>$(LSLibDir)/Newtonsoft.Json.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

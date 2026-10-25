@@ -1,0 +1,139 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Bg3PartyTool.Views.MainWindow"
+        Title="BG3 Party Tool"
+        Width="1200" Height="780" MinWidth="760" MinHeight="520"
+        Background="{StaticResource WindowGlow}"
+        DragDrop.AllowDrop="True">
+  <Panel>
+    <Grid ColumnDefinitions="330,*">
+      <!-- sidebar -->
+      <Border Grid.Column="0" Background="#B316131C" BorderBrush="{StaticResource Line}" BorderThickness="0,0,1,0">
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Top" Spacing="12" Margin="18,20,18,10">
+            <DockPanel>
+              <ComboBox DockPanel.Dock="Right" x:Name="LangBox" Width="76" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" />
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <Border Width="40" Height="40" CornerRadius="10">
+                  <Border.Background>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                      <GradientStop Color="#7C4DBE" Offset="0" />
+                      <GradientStop Color="#D4AF6A" Offset="1" />
+                    </LinearGradientBrush>
+                  </Border.Background>
+                  <Path Data="M12,4 A3.2,3.2 0 1 1 11.99,4 Z M5,20 C6.2,16.4 8.8,14.6 12,14.6 C15.2,14.6 17.8,16.4 19,20"
+                        Stroke="#120F17" StrokeThickness="2.2" StrokeLineCap="Round" Width="22" Height="22" Stretch="Uniform" />
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Classes="h1" FontSize="18" Text="BG3 Party Tool" />
+                  <TextBlock x:Name="AppSubtitle" Classes="muted" FontSize="12" />
+                </StackPanel>
+              </StackPanel>
+            </DockPanel>
+
+            <Border x:Name="DropZone" CornerRadius="14" BorderBrush="{StaticResource Line}" BorderThickness="1.5"
+                    Padding="14" Cursor="Hand" Background="Transparent">
+              <StackPanel Spacing="2" HorizontalAlignment="Center">
+                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Classes="muted" FontSize="13" TextWrapping="Wrap">
+                  <Run x:Name="DropA" /><Run Text=".lsv" Foreground="{StaticResource Gold2}" FontWeight="SemiBold" />
+                  <Run x:Name="DropB" /><Run Text=".rar / .zip" Foreground="{StaticResource Gold2}" FontWeight="SemiBold" />
+                </TextBlock>
+                <TextBlock x:Name="DropC" HorizontalAlignment="Center" Classes="muted" FontSize="12" />
+              </StackPanel>
+            </Border>
+            <Button x:Name="AddButton" Classes="btn" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+
+            <WrapPanel x:Name="Filters">
+              <ToggleButton Classes="chip" Tag="all" IsChecked="True" Margin="0,0,6,6" />
+              <ToggleButton Classes="chip" Tag="Imported" Margin="0,0,6,6" />
+              <ToggleButton Classes="chip" Tag="Game" Margin="0,0,6,6" />
+              <ToggleButton Classes="chip" Tag="Output" Margin="0,0,6,6" />
+            </WrapPanel>
+          </StackPanel>
+          <ListBox x:Name="SaveList" Classes="saves" Margin="8,0,8,12" />
+        </DockPanel>
+      </Border>
+
+      <!-- main -->
+      <ScrollViewer Grid.Column="1" x:Name="MainScroll" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel x:Name="MainPanel" Margin="36,28,36,48" Spacing="0">
+          <StackPanel x:Name="EmptyState" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,180,0,0" Spacing="8">
+            <TextBlock x:Name="EmptyTitle" Classes="h1" FontSize="28" HorizontalAlignment="Center" Foreground="{StaticResource Text}" />
+            <TextBlock x:Name="EmptyText" Classes="muted" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" MaxWidth="440" />
+          </StackPanel>
+
+          <StackPanel x:Name="SaveView" IsVisible="False" Spacing="0">
+            <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,18">
+              <Border Grid.Column="0" x:Name="HeroFrame" CornerRadius="14" ClipToBounds="True" Width="230" Height="144" Margin="0,0,24,0"
+                      BorderBrush="{StaticResource Line}" BorderThickness="1" BoxShadow="0 10 30 0 #73000000">
+                <Image x:Name="HeroImage" Stretch="UniformToFill" />
+              </Border>
+              <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="8">
+                <TextBlock x:Name="SaveTitle" Classes="h1" FontSize="28" TextWrapping="Wrap" />
+                <WrapPanel x:Name="SaveFacts" />
+                <TextBlock x:Name="SavePath" Classes="muted" FontSize="12" TextWrapping="Wrap" />
+                <WrapPanel>
+                  <Button x:Name="RenameButton" Classes="btn" Margin="0,0,8,0" />
+                  <Button x:Name="RevealButton" Classes="btn" Margin="0,0,8,0" />
+                  <Button x:Name="DeleteButton" Classes="btn danger" />
+                </WrapPanel>
+              </StackPanel>
+            </Grid>
+
+            <DockPanel Margin="0,0,0,14">
+              <TextBlock DockPanel.Dock="Left" x:Name="AvatarsTitle" Classes="h1" FontSize="17" Foreground="{StaticResource Text}" />
+              <TextBlock x:Name="AvatarsHint" Classes="muted" FontSize="13" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
+            </DockPanel>
+            <WrapPanel x:Name="Cards" />
+
+            <DockPanel Margin="0,18,16,14">
+              <Button DockPanel.Dock="Right" x:Name="LoadCharacterButton" Classes="btn" />
+              <StackPanel VerticalAlignment="Center">
+                <TextBlock x:Name="ParkedTitle" Classes="h1" FontSize="17" Foreground="{StaticResource Text}" />
+                <TextBlock x:Name="ParkedHint" Classes="muted" FontSize="13" TextWrapping="Wrap" />
+              </StackPanel>
+            </DockPanel>
+            <WrapPanel x:Name="ParkedCards" />
+            <TextBlock x:Name="ParkedEmpty" Classes="muted" FontSize="13" Margin="0,0,0,4" />
+
+            <Border x:Name="ResultPanel" IsVisible="False" Margin="0,22,16,0" Padding="20,18" CornerRadius="14"
+                    Background="{StaticResource Panel}" BorderBrush="#596CC28F" BorderThickness="1">
+              <StackPanel Spacing="12">
+                <TextBlock x:Name="ResultTitle" Classes="h1" FontSize="17" Foreground="{StaticResource Ok}" />
+                <Border Background="#4D000000" CornerRadius="10" Padding="12,10">
+                  <SelectableTextBlock x:Name="ResultLog" FontFamily="Cascadia Mono, DejaVu Sans Mono, monospace" FontSize="12"
+                                       Foreground="{StaticResource Muted}" TextWrapping="Wrap" />
+                </Border>
+                <WrapPanel>
+                  <Button x:Name="OpenFolderButton" Classes="btn primary" Margin="0,0,10,0" />
+                  <Button x:Name="ShowResultButton" Classes="btn" />
+                </WrapPanel>
+              </StackPanel>
+            </Border>
+
+            <Border Margin="0,26,16,0" Padding="18,14" CornerRadius="14" Background="#0FD4AF6A" BorderBrush="#40D4AF6A" BorderThickness="1">
+              <TextBlock Classes="muted" FontSize="13.5" TextWrapping="Wrap">
+                <Run x:Name="HelpLabel" Foreground="{StaticResource Gold2}" FontWeight="SemiBold" />
+                <Run x:Name="HelpText" />
+              </TextBlock>
+            </Border>
+          </StackPanel>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+
+    <!-- busy overlay -->
+    <Border x:Name="Busy" IsVisible="False" Background="#8C050408">
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="14">
+        <ProgressBar IsIndeterminate="True" Width="220" Foreground="{StaticResource Gold}" />
+        <TextBlock x:Name="BusyLabel" Classes="h1" FontSize="15" HorizontalAlignment="Center" />
+      </StackPanel>
+    </Border>
+
+    <!-- error toast -->
+    <Border x:Name="Toast" IsVisible="False" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="20,0,20,22"
+            Background="#3A1D22" BorderBrush="{StaticResource Danger}" BorderThickness="1" CornerRadius="10" Padding="16,10" MaxWidth="760">
+      <TextBlock x:Name="ToastText" Foreground="#FFD8D4" TextWrapping="Wrap" />
+    </Border>
+  </Panel>
+</Window>
