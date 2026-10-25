@@ -1,106 +1,124 @@
 # BG3 Party Tool
 
-Wycina postać gracza (awatara) z save'a Baldur's Gate 3, żeby nowa osoba dołączająca do kampanii
-w multi dostała kreator postaci zamiast cudzej postaci.
+*English · [Polski](README.pl.md)*
 
-## Użycie
+Parks a player's character in a Baldur's Gate 3 save so that a new person joining your co-op campaign gets
+**character creation** instead of being handed somebody else's character, and restores the parked character later.
 
-- Linux: `dist/linux-x64/BG3PartyTool`
-- Windows: `dist/win-x64/BG3PartyTool.exe`
+The game itself has no way to do this: a character sent to Withers' Wardrobe is still a player character, and the next
+person who joins is assigned it. This tool edits the save instead. The original save is never modified; every
+operation writes a new save.
 
-Przeciągnij na okno save `.lsv` albo archiwum `.rar`/`.zip` z save'ami (albo wybierz save z gry z listy).
+## Download
 
-- **Odłóż postać**: usuwa ją z drużyny i zapisuje `<Postać>.postac.json`. Powstaje nowy save `<nazwa>_bez_<Postać>`.
-  Domyślnie postać jest też chowana ze świata (off-stage + niewidzialność, tak jak gra chowa swoje postacie). Bez tego
-  zostaje na miejscu jako NPC. W obu przypadkach nadal istnieje w save'ie ze swoim ekwipunkiem, więc da się ją przywrócić.
-- **Odłożone postacie → Przywróć**: oddaje odłożonej postaci status gracza w dowolnym późniejszym save'ie tej samej
-  kampanii, pierwotnemu albo innemu graczowi, który ma już postać w save'ie. Można też oddać jej towarzyszy, których
-  przejął ktoś inny. Powstaje `<nazwa>_z_<Postać>`. Plik postaci z innego komputera wczytasz przyciskiem
-  **Wczytaj postać z pliku…** albo przeciągając go na okno.
+Grab the latest build from [Releases](https://github.com/nirnx/bg3-party-tool/releases): `BG3PartyTool-win-x64.zip`
+(Windows) or `BG3PartyTool-linux-x64.tar.gz` (Linux). Single file, nothing to install.
 
-Oryginalny save zawsze zostaje nietknięty. Wynik daj hostowi (twórcy kampanii) do
-`%LOCALAPPDATA%\Larian Studios\Baldur's Gate 3\PlayerProfiles\Public\Savegames\Story\`.
+## How to use
 
-Przywracanie działa w obrębie kampanii, bo postać nadal istnieje w świecie jako NPC. Przenoszenie postaci do innej
-kampanii nie jest obsługiwane.
+1. Start the tool. Your BG3 saves are listed on the left (the game folder is found automatically on Windows and Linux,
+   including the native Linux build, Proton and Heroic/Wine prefixes). You can also drop a `.lsv` or a `.rar`/`.zip`
+   with saves onto the window, or use **Add from disk…**.
+2. Pick the save and click **Park character** on the player who is leaving. The new save goes straight into your BG3
+   saves (or into the tool's folder, if someone else hosts and you need to send it to them). The character's data is
+   written to `<Name>.postac.json`, which appears under **Parked characters**.
+3. Load the new save in multiplayer. The newcomer joins and gets character creation.
+4. When the old player comes back, open **Parked characters → Restore**. The character can be given back to the original
+   player or to any player who already has a character in the save. A character file from another computer can be
+   loaded with **Load character from file…**.
 
-Dane narzędzia (wgrane save'y, wyniki): `%LOCALAPPDATA%\BG3PartyTool` / `~/.local/share/BG3PartyTool`.
+**The one rule to remember:** a newcomer gets character creation only when there is no free player character left in
+the save. The game hands a joiner any player character whose owner is not connected, any character sitting in Withers'
+Wardrobe, and the second character of a player who controls two. So, for the duration of character creation, every
+remaining character must belong to a connected player and every player must control exactly one. If the host plays two
+characters, park the second one as well and restore it afterwards. Companions in the active party must leave room too
+(the game dismisses one automatically if the party is full).
 
-CLI (bez okna): `BG3PartyTool --list <save.lsv>`, `--import <plik>`, `--remove <save.lsv> <postać> [komu-towarzysze]`,
-`--exports <save.lsv>`, `--restore <save.lsv> <postać.postac.json> [profil]`.
+Results are written as manual saves, so the game's Load menu lists them under their own name
+(`QuickSave_12_without_Vesania` by default; you can type any name). The tool can also rename and delete saves, and the
+UI is available in English and Polish (switch in the top-left corner).
 
-## Co dokładnie jest zmieniane
+Restoring works within one campaign, because the parked character still exists in that world. Moving a character to a
+different campaign is not supported.
 
-Usunięta postać zostaje w świecie jako zwykły NPC. Z save'a znika to, co czyni ją postacią gracza:
+Tool data (imported saves, results, character files): `%LOCALAPPDATA%\BG3PartyTool` on Windows,
+`~/.local/share/BG3PartyTool` on Linux.
 
-| Miejsce | Zmiana |
+### Command line
+
+```
+BG3PartyTool --list <save.lsv>
+BG3PartyTool --import <file.lsv|.rar|.zip>
+BG3PartyTool --remove <save.lsv> <character> [recruits-to] [--to-game]
+BG3PartyTool --exports <save.lsv>
+BG3PartyTool --restore <save.lsv> <character.postac.json> [profile] [--to-game]
+BG3PartyTool --rename <save.lsv> <name>
+BG3PartyTool --delete <save.lsv>
+BG3PartyTool --game-dir
+```
+
+## What exactly is changed
+
+The parked character stays in the world as a hidden NPC (off-stage and invisible, the way the game hides its own
+characters), with its inventory and history intact. What is removed is everything that makes it a *player* character:
+
+| Where | Change |
 |---|---|
-| `Globals.lsf` → blob ECS `NewAge` (LSMF) | elementy `AvatarComponent`, `PlayerComponent`, `ClientControlComponent`, `party.MemberComponent`; wpis w `party.CompositionComponent`; profil gracza w `party.UserSnapshotComponent`; towarzysze z `recruit.RecruitedBy`/`Recruiter` przechodzą do wybranej postaci |
-| `Globals.lsf` → region `Characters` | flagi gracza (IsPlayer, Multiplayer, InParty, HostControl, CharacterControl) i profil właściciela |
-| `StorySave.bin` (Osiris) | fakty postaci w `DB_Players`, `DB_Avatars`, `DB_PartyMembers`, `DB_PartOfTheTeam`, `DB_GLO_Playable` i kilku pokrewnych |
-| `meta.lsf`, `SaveInfo.json` | wpis na ekranie wczytywania |
-| schowanie (opcja) | flagi OffStage + IgnoresTriggers, bez Activated; elementy `OffStageComponent` i `InvisibilityComponent` (źródło 4, pozycja postaci), tak jak u postaci schowanych przez grę |
+| `Globals.lsf` → ECS blob `NewAge` (LSMF) | the `AvatarComponent`, `PlayerComponent`, `ClientControlComponent` and `party.MemberComponent` elements; the entry in `party.CompositionComponent`; the player's profile in `party.UserSnapshotComponent`; the **AVATAR** tag in `tags.OsirisComponent`; companions recruited by the character (`recruit.RecruitedBy`/`Recruiter`) move to another player |
+| `Globals.lsf` → `Characters` region | player flags (IsPlayer, Multiplayer, InParty, HostControl, CharacterControl) and the owner profile; the global flag `GEN_MaxPlayerCountReached` is cleared |
+| `StorySave.bin` (Osiris) | the character's facts in `DB_Players`, `DB_Avatars`, `DB_PartyMembers`, `DB_PartOfTheTeam`, `DB_GLO_Playable` and a few related databases |
+| `meta.lsf`, `SaveInfo.json` | the load-screen party entry |
 
-Obok nowego save'a zapisuje się `<Postać>.postac.json` (format 2) ze wszystkim, co wycięto: elementy ECS, ID członka
-drużyny, wpis ekranu wczytywania, kolumny i oryginalne bajty faktów Osirisa oraz `GameID` kampanii.
+Everything removed is stored in `<Name>.postac.json` (ECS elements, party member id, load-screen entry, the Osiris facts
+as the game's original bytes, the campaign `GameID`), and restoring puts it back. A park-and-restore round trip yields a
+save that is semantically identical to the original.
 
-Przywracanie robi to samo w drugą stronę. Nowe dane bloba są dopisywane na końcu obszaru danych (blok nazw i tablica
-komponentów przesuwają się, offset w nagłówku jest aktualizowany), a tablice komponentów, które rosną, są przenoszone
-tam w całości. Istniejące dane się nie ruszają, więc żaden wskaźnik się nie psuje. Fakty Osirisa wracają jako
-oryginalne bajty gry. Fakty slotów awatara (flagi wyrzucania, frakcja `Hero_PlayerN`) są pomijane, jeśli w międzyczasie
-zajęła je inna postać. Cykl odłóż i przywróć daje save semantycznie identyczny z oryginałem: te same fakty Osirisa
-i te same komponenty ECS (po rozwiązaniu wskaźników).
+### Why the AVATAR tag matters
 
-Edycje bloba nie przesuwają danych między komponentami (tylko zmniejszanie liczników i kompaktowanie zakresów
-w miejscu), a fakty Osirisa są wycinane bajtowo z oryginalnego pliku. LSLib zapisuje flagi wartości inaczej niż gra,
-więc jego zapis służy tylko do namierzenia bajtów, a wynik jest weryfikowany ponownym odczytem.
+Traced with a debugger attached to the host: when someone joins, `esv::JoiningProtocol` collects candidates with the
+`tag::AvatarComponent`, which the engine derives from the story tag **AVATAR** (`306b9b05-1057-4770-aa17-01af21acd650`),
+not from the persisted `AvatarComponent`. Any candidate without a connected owner is handed to the joiner as a broken
+NPC and no character creation starts. Only when no candidate is left does the server enqueue the user into
+`esv::character_creation::System`. The same root cause explains the "removed player can only spectate" problem of the
+old Script Extender console recipe for deleting characters.
 
-Testowane na save'ach z wersji gry 4.1.1.x (LSMF 0x08000101). Inna wersja bloba jest odrzucana z komunikatem.
+### Checksums the game verifies
 
-## Budowanie
+* **Package MD5** (LSPK v18 header): MD5 over the uncompressed contents of all files, sorted by lower-cased path, with
+  each digest byte incremented by one. LSLib writes zeros there, which triggers the "save tampered or corrupted"
+  warning; the tool stamps the real hash after packing.
+* **NewAge blob hash** (LSMF header, offset 8): MurmurHash3 x64_128 over the bytes after the header
+  (`blockOffset + blockSize`), seed `0xf0015eed5eedf001` in both halves, result `h1 + h2`. Without it the game aborts
+  loading with "server shutdown". Recomputed on every write and checked when a save is opened.
 
-Wymaga .NET SDK 10. `./build.sh` buduje obie binarki (cross-compile z Linuksa działa).
-`vendor/lslib` to [LSLib](https://github.com/Norbyte/lslib) v1.20.4 (ExportTool). Font Cinzel: SIL OFL (`src/Assets/Cinzel-OFL.txt`).
+Blob edits never move data between components (elements are shift-deleted, ranges compacted in place, new data appended
+at the end with the header offsets updated), so no pointer breaks. Osiris facts are cut out byte-exact from the original
+file; LSLib's writer is used only to locate them, because it encodes value flags differently from the game.
 
-Uwaga na LSLib: `Packager.CreatePackage` filtruje pliki po pełnej ścieżce (katalog z kropką, np. `.local`, wycina
-wszystko), a przy `ExcludeHidden=false` nie dodaje żadnego pliku, więc pakowanie składa listę plików samo.
+Tested with game version 4.1.1.x (LSMF 0x08000101). Other blob versions are rejected with a message.
 
-Sprawdzanie manipulacji: gra ostrzega „zapisany stan gry wykrył manipulację”, jeśli pole MD5 w nagłówku LSPK v18 nie
-zawiera skrótu zawartości. Skrót to MD5 z rozpakowanej zawartości wszystkich plików posortowanych po ścieżce małymi
-literami, do każdego bajtu wyniku +1. LSLib wpisuje tam zera, więc `SaveFile.StampHash` łata nagłówek po spakowaniu
-(sprawdzone na nietkniętych save'ach z 4.1.1).
+## Building
 
-Suma kontrolna NewAge: nagłówek bloba LSMF (offset 8) trzyma MurmurHash3 x64_128 z danych za nagłówkiem
-(blockOffset + blockSize bajtów), ziarno 0xf0015eed5eedf001 w obu połówkach, wynik h1+h2. Bez niej gra przerywa
-wczytywanie komunikatem „Wyłączenie serwera”. `Lsmf.ToArray` ją przelicza, a konstruktor sprawdza na wejściu.
-Diagnostyka: `BG3PT_STEPS` (np. `egh`) ogranicza odkładanie do wybranych kroków, `BG3PT_SAVEID` zmienia numer save'a
-w menu gry, `--repack` przepakowuje save bez zmian. `tools/bg3-drugi-gracz.sh` odpala drugą kopię gry z nowym
-profilem do testów dołączania.
+Requires the .NET 10 SDK. `./build.sh` publishes both single-file binaries (cross-compiling the Windows one from Linux
+works); GitHub Actions does the same on every push and publishes a release for `v*` tags.
 
-Flaga „pełna drużyna graczy”: skrypt `PROC_CheckPartyFull` ustawia globalną flagę `GEN_MaxPlayerCountReached`
-(823b5064…), gdy liczba graczy plus zarezerwowane miejsca osiągnie `GetMaxPartySize()`, a przelicza ją tylko przy
-kilku zdarzeniach. Po wycięciu gracza zostałaby włączona i blokowała towarzyszy oraz kreator dla dołączających, więc
-odkładanie postaci ją zdejmuje (Globals `OsirisVariableHelper/.../FlagMap` + fakt `DB_GlobalFlag`), a przywracanie
-ustawia z powrotem, gdy graczy znów jest 4.
+`vendor/lslib` holds the assemblies from [LSLib](https://github.com/Norbyte/lslib) v1.20.4 (MIT). The Cinzel font is
+under the SIL OFL (`src/Assets/Cinzel-OFL.txt`).
 
-Dlaczego dołączający nie dostawał kreatora (ustalone debuggerem na hoście, `tools/trace-join.sh`): przy dołączaniu
-`esv::JoiningProtocol` zbiera kandydatów z komponentem `tag::AvatarComponent`, który silnik wyprowadza z tagu
-fabularnego **AVATAR** (306b9b05-1057-4770-aa17-01af21acd650), a nie z zapisanego `game.avatar.v0.AvatarComponent`.
-Taka postać bez podłączonego użytkownika (także odesłana do szafy Marnieja, także nadmiarowa postać podłączonego
-gracza) jest wręczana nowemu graczowi; dopiero gdy nie ma żadnej, serwer zgłasza gracza do
-`esv::character_creation::System` i rusza kreator. Odkładanie zdejmuje więc tag AVATAR z
-`game.tags.v0.OsirisComponent`, przywracanie go oddaje. Lalki z kreatora (`SYS_CC_I`) nie biorą w tym udziału.
-Wniosek praktyczny: na czas tworzenia postaci przez nową osobę host nie może mieć drugiej postaci (dostałby ją
-dołączający), trzeba ją odłożyć i przywrócić po kreatorze.
+LSLib notes: `Packager.CreatePackage` filters files by their absolute path (a directory with a dot, e.g. `.local`, drops
+everything) and adds nothing with `ExcludeHidden=false`, so the tool builds the package file list itself.
 
-Narzędzia diagnostyczne w `tools/`: `bg3-drugi-gracz.sh` (druga kopia gry z własnym profilem i emulatorem Steam API,
-do testów dołączania na jednym komputerze), `bg3-host-log.sh` (host z logiem silnika; natywna wersja pisze logi do
-`~/.local/state/Larian Studios/Baldur's Gate 3/logs/`), `trace-join.sh` + `trace-join.py` (gdb na hoście: decyzje
-dołączania i kreatora, adresy dla 4.1.1.7631656).
+### Diagnostics
 
-Interfejs jest po angielsku (domyślnie) i po polsku; przełącznik języka jest w lewym górnym rogu, wybór zapisuje się w
-`settings.json` w folderze danych narzędzia. Poza odkładaniem i przywracaniem postaci narzędzie potrafi wgrać save z dysku
-(przycisk lub przeciągnięcie), zmienić nazwę save'a (nowy folder `<prefiks>__<nazwa>` i plik `<nazwa>.lsv`, z opcją
-zamiany szybkiego/autozapisu na zapis ręczny, bo tylko te gra pokazuje w menu pod własną nazwą) oraz usunąć save
-(tylko z folderów, którymi zarządza: Story gry, wgrane, wyniki). CLI: `--rename <save.lsv> <nazwa> [--manual]`,
-`--delete <save.lsv>`.
+* `BG3PT_STEPS=abc…` limits parking to selected steps, `BG3PT_SAVEID=n` changes the save's number, `--repack` rewrites a
+  save without changes.
+* `tools/bg3-drugi-gracz.sh` starts a second instance of the game with its own profile (and its own Steam identity via a
+  Steam API emulator placed in a copy of `bin/`) to test joining on one machine.
+* `tools/bg3-host-log.sh` starts the host with the engine log; the native Linux build writes logs to
+  `~/.local/state/Larian Studios/Baldur's Gate 3/logs/`.
+* `tools/trace-join.sh` attaches gdb to the running host and logs the join and character-creation decisions
+  (addresses for build 4.1.1.7631656).
+
+## Licence
+
+MIT, see `LICENSE`.
