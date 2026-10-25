@@ -22,7 +22,7 @@ public sealed class RestoreDialog : Window
     public RestoreDialog(ExportFile export, SaveFile save)
     {
         var info = export.Info;
-        _target = new SaveTarget(Library.DefaultName(save.SaveName, "name.with", info.Name));
+        _target = new SaveTarget(Library.RestoreName(save.SaveName, info.Name));
         Title = L.F("restore.title", info.Name);
         Width = 540;
         SizeToContent = SizeToContent.Height;

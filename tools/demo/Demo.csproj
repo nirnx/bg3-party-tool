@@ -12,5 +12,6 @@
     <ProjectReference Include="../../src/Bg3PartyTool.csproj" />
     <PackageReference Include="Avalonia.Headless" Version="11.3.22" />
     <PackageReference Include="Avalonia.Skia" Version="11.3.22" />
+    <PackageReference Include="SkiaSharp" Version="2.88.9" />
   </ItemGroup>
 </Project>

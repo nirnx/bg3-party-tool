@@ -258,6 +258,13 @@ public static partial class Library
     /// <summary>"QuickSave_12_without_Vesania": the source name plus a localized word and the character.</summary>
     public static string DefaultName(string saveName, string wordKey, string character) => $"{saveName}_{L.T(wordKey)}_{SafeName(character)}";
 
+    /// <summary>Name for a restore result: "X_without_Vesania" goes back to "X", anything else gets "_with_Vesania".</summary>
+    public static string RestoreName(string saveName, string character)
+    {
+        var suffix = $"_{L.T("name.without")}_{SafeName(character)}";
+        return saveName.EndsWith(suffix, StringComparison.Ordinal) && saveName.Length > suffix.Length ? saveName[..^suffix.Length] : DefaultName(saveName, "name.with", character);
+    }
+
     static string OutRoot(bool toGame)
     {
         if (!toGame) return OutputDir;
@@ -361,7 +368,7 @@ public static partial class Library
         var s = new SaveFile(lsv, WorkFor(lsv));
         var owner = profile ?? info.Profile;
         s.RestoreAvatar(export, owner, takeBackRecruits, Emit);
-        var name = string.IsNullOrWhiteSpace(newName) ? DefaultName(s.SaveName, "name.with", info.Name) : newName.Trim();
+        var name = string.IsNullOrWhiteSpace(newName) ? RestoreName(s.SaveName, info.Name) : newName.Trim();
         s.MakeManualSave();
         var output = s.Write(OutRoot(toGame), name);
         Emit(L.F("lib.saved", output));
